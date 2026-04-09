@@ -1,19 +1,188 @@
-/**
- * Footer Styles
- */
+/* ─── Design Tokens ─────────────────────────────────────── */
+:root {
+    --color-bg: #0f1117;
+    --color-surface: #1a1d27;
+    --color-border: #2a2d3e;
+    --color-primary: #4f8ef7;
+    --color-primary-dark: #3a78e8;
+    --color-text: #e2e8f0;
+    --color-muted: #94a3b8;
+    --color-nav-bg: #111827;
+    --color-nav-border: #1e2a3a;
+    --color-footer-bg: #111827;
+    --font-base: 'Inter', system-ui, sans-serif;
+    --navbar-height: 60px;
+    --radius: 8px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+    --transition: 0.18s ease;
+}
+
+/* ─── Global Reset ──────────────────────────────────────── */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-base);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    min-height: 100vh;
+    margin: 0;
+}
+
+/* ─── Navbar ────────────────────────────────────────────── */
 .navbar {
     z-index: 1000;
+    height: var(--navbar-height);
+    padding: 0 1.5rem;
+    background-color: var(--color-nav-bg) !important;
+    border-bottom: 1px solid var(--color-nav-border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.35);
 }
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.01em;
+    color: #fff !important;
+    padding: 0;
+    margin-right: 2rem;
+}
+
+.navbar-brand:hover {
+    color: var(--color-primary) !important;
+}
+
+.navbar-nav .nav-link {
+    color: var(--color-muted) !important;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.4rem 0.85rem !important;
+    border-radius: var(--radius);
+    transition: color var(--transition), background var(--transition);
+}
+
+.navbar-nav .nav-link:hover {
+    color: #fff !important;
+    background: rgba(255,255,255,0.07);
+}
+
+/* Active link — added via JS below */
+.navbar-nav .nav-link.nav-active {
+    color: var(--color-primary) !important;
+    background: rgba(79, 142, 247, 0.12);
+}
+
+.navbar-nav .dropdown-menu {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    min-width: 180px;
+    padding: 4px;
+}
+
+.navbar-nav .dropdown-item {
+    color: var(--color-muted);
+    font-size: 0.875rem;
+    border-radius: calc(var(--radius) - 2px);
+    padding: 0.5rem 1rem;
+    transition: background var(--transition), color var(--transition);
+}
+
+.navbar-nav .dropdown-item:hover {
+    background: rgba(79,142,247,0.12);
+    color: #fff;
+}
+
+/* ─── Page Content ──────────────────────────────────────── */
+.base-content {
+    padding-top: calc(var(--navbar-height) + 2rem);
+    padding-bottom: 5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+/* ─── Footer ────────────────────────────────────────────── */
 .footer {
     position: fixed;
     bottom: 0;
     width: 100%;
-    background-color: #61615F;
-    color: white;
+    height: 42px;
+    line-height: 42px;
+    background-color: var(--color-footer-bg);
+    border-top: 1px solid var(--color-nav-border);
+    color: var(--color-muted);
     text-align: center;
+    font-size: 0.8rem;
     z-index: 100;
 }
-.base-content {
-    padding-top: 5em;
-    padding-bottom: 5em;
+
+/* ─── Bootstrap Overrides ───────────────────────────────── */
+.container {
+    max-width: 1140px;
+}
+
+.card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    color: var(--color-text);
+}
+
+.table {
+    color: var(--color-text);
+}
+
+.table thead th {
+    border-color: var(--color-border);
+    color: var(--color-muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.table td, .table th {
+    border-color: var(--color-border);
+    vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(79,142,247,0.06);
+    color: var(--color-text);
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.btn-primary:hover {
+    background-color: var(--color-primary-dark);
+    border-color: var(--color-primary-dark);
+}
+
+.jumbotron {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    color: var(--color-text);
+}
+
+/* ─── Mobile Adjustments ────────────────────────────────── */
+@media (max-width: 768px) {
+    .base-content {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .navbar {
+        height: auto;
+        padding: 0.5rem 1rem;
+    }
 }
