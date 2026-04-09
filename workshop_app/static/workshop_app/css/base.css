@@ -99,11 +99,15 @@ body {
 /* ─── Page Content ──────────────────────────────────────── */
 .base-content {
     padding-top: calc(var(--navbar-height) + 2rem);
-    padding-bottom: 5rem;
+    padding-bottom: 5rem;   /* clears fixed footer height + buffer */
     max-width: 1200px;
     margin: 0 auto;
     padding-left: 1.5rem;
     padding-right: 1.5rem;
+}
+
+body {
+    overflow-x: hidden;
 }
 
 /* ─── Footer ────────────────────────────────────────────── */
@@ -177,12 +181,31 @@ body {
 /* ─── Mobile Adjustments ────────────────────────────────── */
 @media (max-width: 768px) {
     .base-content {
-        padding-left: 1rem;
-        padding-right: 1rem;
+        padding-top: calc(var(--navbar-height) + 1.25rem);
+        padding-bottom: 4.5rem;
+        padding-left: 0.85rem;
+        padding-right: 0.85rem;
     }
 
     .navbar {
         height: auto;
         padding: 0.5rem 1rem;
+    }
+
+    /* Prevent nav links from cramping on expand */
+    .navbar-nav .nav-link {
+        padding: 0.5rem 0.75rem !important;
+    }
+
+    /* Dropdown: full-width on mobile */
+    .navbar-nav .dropdown-menu {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .base-content {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
     }
 }

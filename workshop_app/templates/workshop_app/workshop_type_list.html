@@ -6,12 +6,7 @@
 
 {% block content %}
 
-<div style="
-    text-align: center;
-    padding: 3rem 1.5rem 2.5rem;
-    border-bottom: 1px solid var(--color-border);
-    margin-bottom: 2.5rem;
-">
+<div class="wt-hero">
     <h1 style="
         font-size: 2rem;
         font-weight: 700;
@@ -27,37 +22,55 @@
         line-height: 1.6;
     ">Browse available workshop types or propose your own workshop based on your expertise.</p>
 
-    <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-        <a href="#workshop-table"
-           style="
-               display: inline-block;
-               padding: 0.55rem 1.4rem;
-               background-color: var(--color-primary);
-               color: #fff;
-               border-radius: var(--radius);
-               font-size: 0.9rem;
-               font-weight: 600;
-               text-decoration: none;
-           ">View Workshops</a>
+    <div class="wt-hero-buttons">
+        <a href="#workshop-table" class="wt-hero-btn wt-btn-solid">View Workshops</a>
 
         {% if not request.user|has_group:"instructor" %}
-        <a href="{% url 'workshop_app:propose_workshop' %}"
-           style="
-               display: inline-block;
-               padding: 0.55rem 1.4rem;
-               background-color: transparent;
-               color: var(--color-primary);
-               border: 1.5px solid var(--color-primary);
-               border-radius: var(--radius);
-               font-size: 0.9rem;
-               font-weight: 600;
-               text-decoration: none;
-           ">Propose Workshop</a>
+        <a href="{% url 'workshop_app:propose_workshop' %}" class="wt-hero-btn wt-btn-outline">Propose Workshop</a>
         {% endif %}
     </div>
 </div>
 
 <style>
+    /* --- Hero --- */
+    .wt-hero {
+        text-align: center;
+        padding: 3rem 1.5rem 2.5rem;
+        border-bottom: 1px solid var(--color-border);
+        margin-bottom: 2.5rem;
+    }
+
+    .wt-hero-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .wt-hero-btn {
+        display: inline-block;
+        padding: 0.55rem 1.4rem;
+        border-radius: var(--radius);
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-decoration: none;
+        min-width: 160px;
+        text-align: center;
+    }
+
+    .wt-btn-solid {
+        background-color: var(--color-primary);
+        color: #fff;
+        border: 1.5px solid var(--color-primary);
+    }
+
+    .wt-btn-outline {
+        background-color: transparent;
+        color: var(--color-primary);
+        border: 1.5px solid var(--color-primary);
+    }
+
+    /* --- Table section --- */
     .wt-section {
         max-width: 900px;
         margin: 0 auto;
@@ -83,11 +96,14 @@
         border: 1px solid var(--color-border);
         border-radius: var(--radius);
         overflow: hidden;
+        overflow-x: auto;   /* horizontal scroll on narrow screens */
+        -webkit-overflow-scrolling: touch;
     }
 
     .wt-table {
         width: 100%;
         border-collapse: collapse;
+        min-width: 480px;   /* prevents squashing below readable width */
     }
 
     .wt-table thead tr {
@@ -103,6 +119,7 @@
         letter-spacing: 0.06em;
         color: var(--color-muted);
         text-align: left;
+        white-space: nowrap;
     }
 
     .wt-table tbody tr {
@@ -147,6 +164,7 @@
         border: 1px solid var(--color-primary);
         border-radius: var(--radius);
         text-decoration: none;
+        white-space: nowrap;
         transition: background 0.15s ease, color 0.15s ease;
     }
 
@@ -171,6 +189,7 @@
         margin-top: 1.5rem;
         font-size: 0.875rem;
         color: var(--color-muted);
+        flex-wrap: wrap;
     }
 
     .wt-pagination a {
@@ -185,6 +204,32 @@
 
     .wt-pagination a:hover {
         background-color: rgba(79, 142, 247, 0.1);
+    }
+
+    /* --- Responsive --- */
+    @media (max-width: 600px) {
+        .wt-hero {
+            padding: 2rem 1rem 2rem;
+        }
+
+        .wt-hero h1 {
+            font-size: 1.5rem;
+        }
+
+        .wt-hero-btn {
+            width: 100%;
+            min-width: unset;
+        }
+
+        .wt-section {
+            padding: 0 0.25rem;
+        }
+
+        .wt-section-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
     }
 </style>
 
