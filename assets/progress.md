@@ -58,3 +58,15 @@
 - Fixed spacing inconsistencies between sections
 - Ensured buttons and layouts adapt properly on smaller screens
 - Enhanced overall visual balance and usability
+
+## Step 6.1: Filter Functionality Testing
+
+- Tested workshop filtering system using different combinations
+- Verified behavior when no data matches filters
+- Confirmed dynamic filtering and data export functionality
+
+## Step 6.2: Login UI Fix
+
+- Improved visibility of "Sign up" and "Forgot password" links
+- Fixed contrast issues in dark theme
+- Enhanced spacing and readability of login page
