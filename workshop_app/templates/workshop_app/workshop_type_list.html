@@ -1,7 +1,19 @@
 {% extends 'workshop_app/base.html' %}
 {% load custom_filters %}
 {% block title %}
-	View List of available Workshops
+View List of available Workshops
+{% endblock %}
+
+{% block extra-dependencies %}
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script id="types-data" type="application/json">
+[
+{% for w in workshop_type %}
+  {"id": {{ w.id }}, "name": "{{ w.name|escapejs }}", "duration": {{ w.duration }}}{% if not forloop.last %},{% endif %}
+{% endfor %}
+]
+</script>
 {% endblock %}
 
 {% block content %}
@@ -96,18 +108,20 @@
         border: 1px solid var(--color-border);
         border-radius: var(--radius);
         overflow: hidden;
-        overflow-x: auto;   /* horizontal scroll on narrow screens */
+        overflow-x: auto;
+        /* horizontal scroll on narrow screens */
         -webkit-overflow-scrolling: touch;
     }
 
     .wt-table {
         width: 100%;
         border-collapse: collapse;
-        min-width: 480px;   /* prevents squashing below readable width */
+        min-width: 480px;
+        /* prevents squashing below readable width */
     }
 
     .wt-table thead tr {
-        background-color: rgba(255,255,255,0.03);
+        background-color: rgba(255, 255, 255, 0.03);
         border-bottom: 1px solid var(--color-border);
     }
 
@@ -233,60 +247,214 @@
     }
 </style>
 
+<style>
+    .view-toggle-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .view-toggle-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.4rem 1rem;
+        font-size: 0.82rem;
+        font-weight: 600;
+        font-family: var(--font-base);
+        color: var(--color-muted);
+        background: transparent;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .view-toggle-btn:hover,
+    .view-toggle-btn.active {
+        color: var(--color-primary);
+        border-color: var(--color-primary);
+    }
+
+    /* React card grid */
+    .rc-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1rem;
+    }
+
+    .rc-card {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: border-color 0.15s ease;
+    }
+
+    .rc-card:hover {
+        border-color: var(--color-primary);
+    }
+
+    .rc-card-body {
+        padding: 1.1rem 1.1rem 0.75rem;
+    }
+
+    .rc-card-name {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--color-text);
+        margin: 0 0 0.6rem;
+        line-height: 1.4;
+    }
+
+    .rc-card-meta {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0;
+    }
+
+    .rc-card-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-muted);
+    }
+
+    .rc-card-value {
+        font-size: 0.85rem;
+        color: var(--color-text);
+    }
+
+    .rc-card-footer {
+        padding: 0.75rem 1.1rem;
+        border-top: 1px solid var(--color-border);
+    }
+
+    .rc-card-link {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--color-primary);
+        text-decoration: none;
+    }
+
+    .rc-card-link:hover {
+        text-decoration: underline;
+    }
+
+    .rc-empty {
+        color: var(--color-muted);
+        text-align: center;
+        padding: 3rem 1rem;
+        font-size: 0.95rem;
+    }
+</style>
+
 <div id="workshop-table" class="wt-section">
 
-    <div class="wt-section-header">
-        <h2>Workshop Types</h2>
-        {% if request.user|has_group:"instructor" %}
-        <a href="{% url 'workshop_app:add_workshop_type' %}" class="wt-btn-details"
-           style="background-color: var(--color-primary); color: #fff; border-color: var(--color-primary);">
-            + Add Workshop Type
-        </a>
+    <div class="view-toggle-bar">
+        <div class="wt-section-header" style="margin-bottom:0;">
+            <h2>Workshop Types</h2>
+            {% if request.user|has_group:"instructor" %}
+            <a href="{% url 'workshop_app:add_workshop_type' %}" class="wt-btn-details"
+                style="background-color: var(--color-primary); color: #fff; border-color: var(--color-primary);">
+                + Add Workshop Type
+            </a>
+            {% endif %}
+        </div>
+        <div style="display:flex; gap:0.5rem;">
+            <button id="btn-table-view" class="view-toggle-btn active" onclick="switchView('table')">
+                &#9776; Table
+            </button>
+            <button id="btn-card-view" class="view-toggle-btn" onclick="switchView('card')">
+                &#9635; Cards
+            </button>
+        </div>
+    </div>
+
+    <div id="wt-table-view">
+        <div class="wt-table-wrap">
+            <table class="wt-table">
+                <thead>
+                    <tr>
+                        <th class="col-num">#</th>
+                        <th>Workshop Name</th>
+                        <th class="col-duration">Duration (Days)</th>
+                        <th class="col-action">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for w in workshop_type %}
+                    <tr>
+                        <td class="col-num">{{ forloop.counter }}</td>
+                        <td>{{ w.name }}</td>
+                        <td>{{ w.duration }}</td>
+                        <td>
+                            <a href="{% url 'workshop_app:workshop_type_details' w.id %}" class="wt-btn-details">
+                                View Details
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="wt-empty">No workshop types available yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if workshop_type.paginator.num_pages > 1 %}
+        <div class="wt-pagination">
+            {% if workshop_type.has_previous %}
+            <a href="?page={{ workshop_type.previous_page_number }}">&larr; Previous</a>
+            {% endif %}
+            <span>Page {{ workshop_type.number }} of {{ workshop_type.paginator.num_pages }}</span>
+            {% if workshop_type.has_next %}
+            <a href="?page={{ workshop_type.next_page_number }}">Next &rarr;</a>
+            {% endif %}
+        </div>
         {% endif %}
     </div>
 
-    <div class="wt-table-wrap">
-        <table class="wt-table">
-            <thead>
-                <tr>
-                    <th class="col-num">#</th>
-                    <th>Workshop Name</th>
-                    <th class="col-duration">Duration (Days)</th>
-                    <th class="col-action">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for w in workshop_type %}
-                <tr>
-                    <td class="col-num">{{ forloop.counter }}</td>
-                    <td>{{ w.name }}</td>
-                    <td>{{ w.duration }}</td>
-                    <td>
-                        <a href="{% url 'workshop_app:workshop_type_details' w.id %}" class="wt-btn-details">
-                            View Details
-                        </a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="4" class="wt-empty">No workshop types available yet.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div id="wt-card-view" style="display:none;">
+        <div id="react-types-root"></div>
     </div>
-
-    {% if workshop_type.paginator.num_pages > 1 %}
-    <div class="wt-pagination">
-        {% if workshop_type.has_previous %}
-        <a href="?page={{ workshop_type.previous_page_number }}">&larr; Previous</a>
-        {% endif %}
-        <span>Page {{ workshop_type.number }} of {{ workshop_type.paginator.num_pages }}</span>
-        {% if workshop_type.has_next %}
-        <a href="?page={{ workshop_type.next_page_number }}">Next &rarr;</a>
-        {% endif %}
-    </div>
-    {% endif %}
 
 </div>
+
+{% load static %}
+<script src="{% static 'workshop_app/js/types_card_view.js' %}"></script>
+<script>
+    var cardMounted = false;
+
+    function switchView(mode) {
+        var tableEl = document.getElementById('wt-table-view');
+        var cardEl = document.getElementById('wt-card-view');
+        var btnT = document.getElementById('btn-table-view');
+        var btnC = document.getElementById('btn-card-view');
+
+        if (mode === 'card') {
+            tableEl.style.display = 'none';
+            cardEl.style.display = 'block';
+            btnT.classList.remove('active');
+            btnC.classList.add('active');
+            if (!cardMounted) {
+                window.mountCardView('react-types-root', 'types-data');
+                cardMounted = true;
+            }
+        } else {
+            cardEl.style.display = 'none';
+            tableEl.style.display = 'block';
+            btnC.classList.remove('active');
+            btnT.classList.add('active');
+        }
+    }
+</script>
 {% endblock %}

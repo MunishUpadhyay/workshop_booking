@@ -70,3 +70,10 @@
 - Improved visibility of "Sign up" and "Forgot password" links
 - Fixed contrast issues in dark theme
 - Enhanced spacing and readability of login page
+
+## Step 7: React Integration (Card View Toggle)
+
+- Integrated React using CDN without altering backend
+- Implemented toggle between table and card view
+- Used lazy mounting to improve performance
+- Maintained fallback table for reliability
