@@ -128,11 +128,11 @@ Issues like routing inconsistencies and missing dependencies had to be handled c
 ### 1. Admin and Initial State
 
 
-**Before**
-![Before](assets/before/step1admin_login.png)
+**Admin Login**
+![Admin Login](assets/before/step1admin_login.png)
 
-**After**
-![After](assets/before/step1admin.png)
+**Admin Panel**
+![Admin Panel](assets/before/step1admin.png)
 
 Description:
 
@@ -171,6 +171,7 @@ The page was transformed into a structured landing page with a hero section and 
 Description:
 
 Introduced an alternative card-based layout for better usability on smaller screens.
+This enhancement improves usability on smaller screens where tabular layouts are harder to navigate.
 
 ---
 
@@ -240,7 +241,7 @@ These show incremental improvements during development before the final UI polis
 
 ---
 
-## Demo Video to show the UI Improvements
+## Demo Video
 
 [Click here to watch the Demo Video](https://drive.google.com/file/d/1Op206ZBS67ZdTw3-fnKPS3jcSl34Waj9/view?usp=sharing)
 
@@ -289,3 +290,8 @@ http://127.0.0.1:8000/workshop/types/
 ## Final Outcome
 
 The system now provides a cleaner, more structured, and responsive interface while preserving all backend functionality. Improvements were focused on usability and real-world interaction rather than purely visual changes.
+
+## Notes
+
+- Backend logic was intentionally not modified
+- Authentication flow (activation, password reset) was left unchanged as it was outside the scope of UI/UX improvements
