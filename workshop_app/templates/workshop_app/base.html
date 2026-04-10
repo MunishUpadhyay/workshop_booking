@@ -2,6 +2,7 @@
 <html lang="en">
 {% load static %}
 {% load custom_filters %}
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -35,28 +36,24 @@
 
 <body>
 
-{% block header %}
-<nav class="navbar navbar-dark navbar-expand-lg fixed-top">
-    {% if user.is_authenticated %}
-    <a class="navbar-brand" href="{% url 'workshop_app:index' %}">FOSSEE Workshops</a>
-    {% else %}
-    <a class="navbar-brand" href="{{ request.scheme }}://{{ request.get_host }}">FOSSEE Workshops</a>
-    {% endif %}
+    {% block header %}
+    <nav class="navbar navbar-dark navbar-expand-lg fixed-top">
+        <a class="navbar-brand" href="/workshop/types/">FOSSEE Workshops</a>
 
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainNav"
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainNav"
             aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <div class="collapse navbar-collapse" id="mainNav">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="/">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'statistics_app:public' %}">Workshop Statistics</a>
-            </li>
-            {% if user.is_authenticated %}
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'workshop_app:workshop_type_list' %}">Workshop Types</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'statistics_app:public' %}">Workshop Statistics</a>
+                </li>
+                {% if user.is_authenticated %}
                 {% if request.user|has_group:"instructor" %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'statistics_app:team' %}">Team Statistics</a>
@@ -70,67 +67,66 @@
                     <a class="nav-link" href="{% url 'workshop_app:propose_workshop' %}">Propose Workshop</a>
                 </li>
                 {% endif %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'workshop_app:workshop_type_list' %}">Workshop Types</a>
+                {% endif %}
+            </ul>
+
+            {% if user.is_authenticated %}
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        <span class="material-icons"
+                            style="vertical-align: middle; font-size: 1.2rem;">account_circle</span>
+                        <span style="vertical-align: middle; margin-left: 4px;">{{ user.get_full_name|title }}</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                        <a class="dropdown-item" href="{% url 'workshop_app:view_own_profile' %}">Profile</a>
+                        <a class="dropdown-item" href="{% url 'password_change' %}">Change Password</a>
+                        <div class="dropdown-divider" style="border-color: var(--color-border);"></div>
+                        <a class="dropdown-item" href="{% url 'workshop_app:logout' %}">Logout</a>
+                    </div>
                 </li>
+            </ul>
             {% endif %}
-        </ul>
+        </div>
+    </nav>
+    {% endblock %}
 
-        {% if user.is_authenticated %}
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span class="material-icons" style="vertical-align: middle; font-size: 1.2rem;">account_circle</span>
-                    <span style="vertical-align: middle; margin-left: 4px;">{{ user.get_full_name|title }}</span>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                    <a class="dropdown-item" href="{% url 'workshop_app:view_own_profile' %}">Profile</a>
-                    <a class="dropdown-item" href="{% url 'password_change' %}">Change Password</a>
-                    <div class="dropdown-divider" style="border-color: var(--color-border);"></div>
-                    <a class="dropdown-item" href="{% url 'workshop_app:logout' %}">Logout</a>
-                </div>
-            </li>
-        </ul>
-        {% endif %}
-    </div>
-</nav>
-{% endblock %}
-
-<div class="base-content">
-    {% block content %}
+    <div class="base-content">
+        {% block content %}
         <h1>Base Template Content. Please override me.</h1>
-    {% endblock %}
-</div>
-
-<footer class="footer">
-    {% block footer %}
-    <div class="container">
-        Developed by the FOSSEE Group, IIT Bombay
+        {% endblock %}
     </div>
-    {% endblock %}
-</footer>
 
-<script>
-    {% if messages %}
+    <footer class="footer">
+        {% block footer %}
+        <div class="container">
+            Developed by the FOSSEE Group, IIT Bombay
+        </div>
+        {% endblock %}
+    </footer>
+
+    <script>
+        {% if messages %}
         {% for message in messages %}
-            toastr[{% if message.tags %}"{{ message.tags }}"{% else %}"info"{% endif %}]("{{ message }}");
+        toastr[{% if message.tags %}"{{ message.tags }}"{% else %} "info"{% endif %}]("{{ message }}");
         {% endfor %}
-    {% endif %}
+        {% endif %}
 
-    // Highlight the nav link matching the current page path
-    (function () {
-        var path = window.location.pathname;
-        document.querySelectorAll('.navbar-nav .nav-link').forEach(function (link) {
-            var href = link.getAttribute('href');
-            if (href && href !== '/' && path.startsWith(href)) {
-                link.classList.add('nav-active');
-            } else if (href === '/' && path === '/') {
-                link.classList.add('nav-active');
-            }
-        });
-    })();
-</script>
+        // Highlight the nav link matching the current page path
+        (function () {
+            var path = window.location.pathname;
+            document.querySelectorAll('.navbar-nav .nav-link').forEach(function (link) {
+                var href = link.getAttribute('href');
+                if (href && href !== '/' && path.startsWith(href)) {
+                    link.classList.add('nav-active');
+                } else if (href === '/' && path === '/') {
+                    link.classList.add('nav-active');
+                }
+            });
+        })();
+    </script>
 
 </body>
+
 </html>

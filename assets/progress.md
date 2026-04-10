@@ -77,3 +77,9 @@
 - Implemented toggle between table and card view
 - Used lazy mounting to improve performance
 - Maintained fallback table for reliability
+
+## Step 8: Navigation Fix
+
+- Unified navbar logo and home link to a single landing page
+- Removed CMS-based routing dependency
+- Simplified root URL behavior for consistency
