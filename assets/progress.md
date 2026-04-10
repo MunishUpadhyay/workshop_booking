@@ -83,3 +83,11 @@
 - Unified navbar logo and home link to a single landing page
 - Removed CMS-based routing dependency
 - Simplified root URL behavior for consistency
+
+## Step 8.1: Navbar Cleanup and Navigation Refinement
+
+- Removed redundant "Home" link from navbar to avoid duplication with Workshop Types
+- Set "Workshop Types" as the primary landing page
+- Updated logo navigation to consistently redirect to workshop types
+- Improved navigation clarity and reduced user confusion
+- Ensured a cleaner and more intuitive header structure
